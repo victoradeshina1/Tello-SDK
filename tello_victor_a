@@ -1,0 +1,310 @@
+import threading # <--- Library for multithreading
+import socket    # <--- Network library
+import cv2       # <--- OpenCV library
+import time      # <--- System time function library
+
+## Tello Network configuration
+
+tello_IP 		 = '192.168.10.1'
+tello_tx_port	 = 8889
+tello_rx_port	 = 8890
+tello_address	 = (tello_IP, tello_tx_port)
+host_address     = ''
+tello_address_rx = (host_address, tello_rx_port)
+
+sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+sock.bind(tello_address_rx)
+
+#  --------------------------------------- #
+#  --------- TELLO EDU functions --------- #
+#  --------------------------------------- #
+
+def takeoff(telem):
+    forceTello('takeoff', telem)
+
+def goto(x, y, z, speed, mid):
+    msg = 'go'+ ' ' + str(int(x))+ ' ' + str(int(y))+ ' ' + str(int(z))+ ' ' + str(int(speed)) + ' ' + mid
+    forceTello(msg)
+
+def land(telem):
+    forceTello('land', telem)
+    print (telem[0][13])
+    while telem[0][13]>10:
+        print (telem[0][13])
+        forceTello('land', telem)
+
+def emergency(telem):
+    forceTello('emergency', telem)
+
+def up(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('up '+str(x), telem)
+
+def down(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('down '+str(x), telem)
+
+def left(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('left '+str(x), telem)
+
+def right(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('right '+str(x), telem)
+
+def forward(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('forward '+str(x), telem)
+
+def back(x, telem):
+    if x < 19:
+        print ('INVALID: value must be between 20 and 500 cm')
+    elif x > 500:
+        print ('INVALID: value must be between 20 and 500 cm')
+    else:
+        forceTello('back '+str(x), telem)
+
+
+def cw(x, telem):
+    if x < 1:
+        print ('INVALID: value must be between 1 and 360 degrees')
+    elif x > 360:
+        print ('INVALID: value must be between 1 and 360 degrees')
+    else:
+        forceTello('cw '+str(x), telem)
+
+def ccw(x, telem):
+    if x < 1:
+        print ('INVALID: value must be between 1 and 360 degrees')
+    elif x > 360:
+        print ('INVALID: value must be between 1 and 360 degrees')
+    else:
+        forceTello('ccw '+str(x), telem)
+
+def flip(s,telem):
+    forceTello('flip '+s, telem)
+
+def go(x, y, z, speed):
+    if abs(x) < 20:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    elif abs(x) > 500:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    elif abs(y) < 20:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    elif abs(y) > 500:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    elif abs(z) < 20:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    elif abs(z) > 500:
+        print ('INVALID: value must be between -500 and 500 degrees and not within -20 to 20')
+    else:
+        forceTello('go '+str(x)+ ' ' +str(y)+ ' ' +str(z)+ ' ' +str(speed), telem)
+
+#  --------------------------------------- #
+#  ---------- CUSTOM functions ----------- #
+#  --------------------------------------- #
+def forceTello(msg, telem, retry=5):
+    counter = 0
+    print ('GOT: '+ msg)
+    while counter != retry :
+        response = sendTello(msg)
+        counter += 1
+    waitOK(telem)
+    print ('DID: '+msg)
+
+def waitOK(telem):
+    counter = 0
+    while telem != 'ok':
+        #print (telem)
+        counter += 1
+        time.sleep(0.5)
+        if counter == 10:
+            break
+
+
+#  --------------------------------------- #
+#  --------- tello SDK functions --------- #
+#  --------------------------------------- #
+
+
+# This function sends the command response
+def setup_tello():
+	counter = 0
+	while True:
+		print ('Connecting to tello and starting SDK mode')
+		response = sendTello('command')
+		if response == 'ok':
+			print ('---- tello connected ----')
+			break
+		else:
+			print ('Looking for the tello...')
+			counter += 1
+		if counter == 10:
+			print ('ERROR: could not connect')
+			break
+
+def setup_tello_video():
+	print ('Turning video ON')
+	sendTello('streamon')
+	tello_video = ('udp://127.0.0.1:11111')
+	vs = cv2.VideoCapture(tello_video)
+	vs.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc('H', '2', '6', '4'))
+	frame = [None, None]
+	tello_video_thread = video_thread(vs, frame)
+	tello_video_thread.start()
+	time.sleep(3)
+	return frame
+
+def recv():
+	while True:
+		try:
+			data, server = sock.recvfrom(256)
+			output = data.decode(encoding="utf-8")
+			return output
+
+		except Exception:
+			print ('\nExit . . .\n')
+			break
+
+
+
+def sendTello(msg, tello_address = tello_address): # From Tello SDK Example
+	try:
+		msg = msg.encode(encoding="utf-8")
+		sent = sock.sendto(msg, tello_address)
+		response = recv()
+		return response
+
+	except KeyboardInterrupt:
+		print ('\n . . .\n')
+		sock.close()
+
+class video_thread(threading.Thread):
+	def __init__(self, vs, data):
+		threading.Thread.__init__(self)
+		self.vs = vs
+		self.data = data
+
+	def run(self):
+		while True:
+			self.data[0] = video_update(self.vs)
+
+def video_update(vs):
+	ret, frame = vs.read()
+	if (ret == True and frame.shape == (720, 960, 3)):
+		return frame
+
+def setup_tello_telemetry():
+	telem = [None]
+	tello_telem = telemetry(telem)
+	tello_telem.start()
+	return telem
+
+class telemetry(threading.Thread):
+	def __init__(self, data):
+		threading.Thread.__init__(self)
+		self.data = data
+
+	def run(self):
+		while True:
+			self.data[0] = getTelem()
+			#print (self.data[0])
+			#time.sleep(0.1)
+
+def getTelem():
+    flag = True
+    while flag:
+        time.sleep(0.1)
+        try:
+            response, ip_address = sock.recvfrom(256)
+            telem = response.decode(encoding='utf-8')
+            #print (telem)
+            string = telem
+            string = string.split(';')
+            #mission pad
+            missionPad = float((string[0].split(':'))[1])
+            # relative position to mission pad
+            posX = float((string[1].split(':'))[1])
+            posY = float((string[2].split(':'))[1])
+            posZ = float((string[3].split(':'))[1])
+            # Attitude
+            pitch = float((string[5].split(':'))[1])
+            roll = float((string[6].split(':'))[1])
+            yaw = float((string[7].split(':'))[1])
+            # Velocities
+            vgx = float((string[8].split(':'))[1])
+            vgy = float((string[9].split(':'))[1])
+            vgz = float((string[10].split(':'))[1])
+            # Temperatures
+            templ = float((string[11].split(':'))[1])
+            temph = float((string[12].split(':'))[1])
+            # Time of flight
+            tof = float((string[13].split(':'))[1])
+            # Battery
+            bat = float((string[15].split(':'))[1])
+            #if bat <= '30':
+             #   print ('LOW BATTERY: '+ bat )
+            # Height
+            h = float((string[14].split(':'))[1])
+            baro = float((string[16].split(':'))[1])
+            telem = (missionPad, posX, posY, posZ, pitch, roll, yaw, vgx, vgy, vgz, templ, temph, tof, h, bat, baro)
+            #           0          1     2     3    4      5      6   7     8   9     10     11    12  13  14    15
+            return telem
+            flag = False
+        except IndexError:
+            telem = ['not telemetry']
+
+def setup_unity_command():
+	unity_cmd = [None]
+	unity_telem = unity_stream(unity_cmd)
+	unity_telem.start()
+	return unity_cmd
+
+class unity_stream(threading.Thread):
+	def __init__(self, data):
+		threading.Thread.__init__(self)
+		self.data = data
+
+	def run(self):
+		while True:
+			self.data[0] = getUnity()
+			#print (self.data[0])
+			#time.sleep(0.1)
+
+def getUnity():
+    flag = True
+    while flag:
+        time.sleep(0.1)
+        try:
+            response, ip_address = sock.recvfrom(256)
+            telem = response.decode(encoding='utf-8')
+            return telem
+            flag = False
+        except IndexError:
+            telem = ['unity not there']
+
+def battery(telem):
+    try:
+        print ('Battery level: ' + str(telem[0][14]) + '%')
+    except TypeError:
+        print ('Battery level not available')
