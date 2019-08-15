@@ -1,11 +1,9 @@
-import threading # <--- Library for multithreading
-import socket    # <--- Network library
-import cv2       # <--- OpenCV library
-import time      # <--- System time function library
+import threading 
+import socket    
+import cv2       
+import time      
 
-## Tello Network configuration
-
-tello_IP 		 = '192.168.10.1'
+tello_IP 	= '192.168.10.1'
 tello_tx_port	 = 8889
 tello_rx_port	 = 8890
 tello_address	 = (tello_IP, tello_tx_port)
@@ -15,9 +13,7 @@ tello_address_rx = (host_address, tello_rx_port)
 sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 sock.bind(tello_address_rx)
 
-#  --------------------------------------- #
-#  --------- TELLO EDU functions --------- #
-#  --------------------------------------- #
+
 
 def takeoff(telem):
     forceTello('takeoff', telem)
