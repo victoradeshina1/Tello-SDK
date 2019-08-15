@@ -1,0 +1,258 @@
+import tello_victor_a as tello
+import cv2
+import time
+
+# Setup Tello
+tello.setup_tello()
+telem = tello.setup_tello_telemetry()
+
+## Now we introduce another thread for receiving video
+frame = tello.setup_tello_video()
+
+# Settings for filename of the pictures we will be taking
+telloID = 'TELLO-1-'
+counter  = 0
+
+## Change the filepath to match were you will be storing your images
+filepath = ''
+
+#while True:
+
+
+## 1. we ask cv2 to show a window of the current frame
+#cv2.imshow("image", frame[0])
+#print (telem)
+
+## 2. we listen for key presses
+key = cv2.waitKey(1) & 0xFF
+
+## If you press 'q' on your keyboard, the window with the video will close
+## and the aircraft will land
+if key == ord("q"):
+    cv2.destroyAllWindows()
+    tello.forceTello('land',telem)
+    #break
+
+## if you press 'p' on your keyboard you will take a picture and it will save it
+#tello.takeoff(telem)
+#tello.up(10, telem)
+
+
+#a = 20
+def drone():
+    counter = 0
+    cv2.imshow("image", frame[0])
+    key = cv2.waitKey(1) & 0xFF
+
+    tello.takeoff(telem)
+    tello.down(20, telem)
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+
+    tello.up(60, telem)
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+    tello.cw(90, telem)
+    filename = filepath + telloID + str(counter) + '.png'
+    cv2.imwrite(filename, frame[0])
+    print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    counter += 1
+
+    #tello.up(60, telem)
+    #filename = filepath + telloID + str(counter) + '.png'
+    #cv2.imwrite(filename, frame[0])
+    #print ('photo saved: ' + filename)
+    # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+    #counter += 1
+
+
+
+
+    tello.land(telem)
+
+drone()
+
+#if key == ord("p"):
+#filename = filepath+telloID+str(counter)+'.png'
+#cv2.imwrite(filename,frame[0])
+#print ('photo saved: ' + filename)
+            # the counter will increase to change the filename and make sure you dont overide the previously taken picture
+#counter+=1
+#time.sleep(1)
